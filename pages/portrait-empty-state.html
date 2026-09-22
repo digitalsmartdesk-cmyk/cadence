@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>Cadence — Portrait, empty state</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet"/>
+
+<!-- ─────────────────────────────────────────────────────────────
+     PAGE CHROME (not part of the deliverable — only for preview)
+     The drop-in snippet is the <section class="cad-portrait-empty">
+     plus the <style id="cad-portrait-empty-styles"> block.
+───────────────────────────────────────────────────────────────── -->
+<style>
+  html, body { margin: 0; padding: 0; background: #F8F6F1; }
+  body {
+    min-height: 100vh;
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    color: #1c1c1a;
+    display: flex; flex-direction: column;
+  }
+
+  /* simulated app shell — header / nav, for context only */
+  .app-shell {
+    border-bottom: 1px solid #d8d4c7;
+    padding: 22px 40px;
+    display: flex; align-items: baseline; justify-content: space-between;
+  }
+  .app-shell .mark {
+    font-family: "Cormorant Garamond", Georgia, serif;
+    font-weight: 500;
+    font-size: 26px;
+    color: #243D16;
+    letter-spacing: 0.01em;
+    line-height: 1;
+  }
+  .app-shell nav {
+    display: flex; gap: 28px;
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: #6b6b62;
+  }
+  .app-shell nav a { color: inherit; text-decoration: none; }
+  .app-shell nav a.is-current { color: #243D16; }
+  .app-shell .who {
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: #8a8a7d;
+  }
+
+  /* page scaffold */
+  .page {
+    flex: 1;
+    padding: 56px 40px 96px;
+    display: flex; flex-direction: column;
+  }
+  .page-head {
+    max-width: 920px;
+    margin: 0 auto 28px;
+    width: 100%;
+    display: flex; justify-content: space-between; align-items: baseline;
+    padding: 0 4px;
+  }
+  .page-head .crumb {
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: #8a8a7d;
+  }
+  .page-head .crumb .forest { color: #243D16; }
+  .page-head .date {
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: #8a8a7d;
+  }
+</style>
+
+<!-- ─────────────────────────────────────────────────────────────
+     DROP-IN SNIPPET — styles
+───────────────────────────────────────────────────────────────── -->
+<style id="cad-portrait-empty-styles">
+  .cad-portrait-empty {
+    /* layout */
+    box-sizing: border-box;
+    max-width: 920px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 88px 80px 96px;
+
+    /* surface */
+    background: #EEE9DF;
+    border: 1px solid #e0dccf;            /* almost invisible — a paper edge */
+    border-radius: 2px;
+
+    /* type */
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    color: #1c1c1a;
+    text-align: center;
+    position: relative;
+  }
+
+  /* corner ornament — hairline brackets, like an editorial title page */
+  .cad-portrait-empty::before,
+  .cad-portrait-empty::after {
+    content: "";
+    position: absolute;
+    width: 18px; height: 18px;
+    border: 1px solid #c9c3b3;
+  }
+  .cad-portrait-empty::before {
+    top: 18px; left: 18px;
+    border-right: 0; border-bottom: 0;
+  }
+  .cad-portrait-empty::after {
+    bottom: 18px; right: 18px;
+    border-left: 0; border-top: 0;
+  }
+
+  /* kicker — sets the page identity above the heading */
+  .cad-portrait-empty .cad-kicker {
+    font-size: 10.5px;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: #243D16;
+    margin: 0 0 44px;
+  }
+  .cad-portrait-empty .cad-kicker .dot {
+    color: #c9c3b3;
+    margin: 0 10px;
+  }
+
+  /* the mark — 5×5 grid of unfilled tick-marks
+     one for each of the twenty-five choices, all empty, waiting */
+  .cad-portrait-empty .cad-mark {
+    width: 92px;
+    margin: 0 auto 40px;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: repeat(5, 1fr);
+    gap: 14px 14px;
+    aspect-ratio: 1 / 1;
+  }
+  .cad-portrait-empty .cad-mark i {
+    display: block;
+    width: 1px;
+    height: 100%;
+    background: #243D16;
+    opacity: 0.32;
+    margin: 0 auto;
+    transform-origin: center;
+  }
+  /* a single tick is filled — the present moment, the one you're about to make */
+  .cad-portrait-empty .cad-mark i.is-now {
+    width: 2px;
+    opacity: 1;
+    height: 110%;
+    margin-top: -5%;
+  }
+
+  /* heading */
+  .cad-portrait-empty .cad-heading {
+    font-family: "Cormorant Garamond", Georgia, serif;
+    font-weight: 400;
+    font-style: italic;
+    font-size: 54px;
+    line-height: 1.05;
+    letter-spacing: -0.015em;
+    color: #1c1c1a;
+    margin: 0 auto 22px;
+    max-width: 14ch;
+    text-wrap: balance;
+  }
+
+  /* body */
+  .cad-portrait-empty .cad-body {
+    font-family: "Cormorant Garamond", Georgia, serif;
+    font-weight: 400;
+    font-size: 19px;
+    line-height: 1.6;
+    color: #3b3b35;
+    margin: 0 auto 44px;
+    max-width: 48ch;
+    text-wrap: pretty;
+  }
+  .cad-portrait-empty .cad-body em {
+    font-style: italic;
+    color: #1c1c1a;
+  }
+
+  /* CTA */
+  .cad-portrait-empty .cad-cta {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 12px;
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: #F8F6F1;
+    background: #243D16;
+    border: 1px solid #243D16;
+    padding: 16px 26px 15px;
+    border-radius: 2px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 160ms ease, transform 160ms ease;
+  }
+  .cad-portrait-empty .cad-cta:hover { background: #1a2e10; }
+  .cad-portrait-empty .cad-cta:active { transform: translateY(1px); }
+  .cad-portrait-empty .cad-cta .arrow {
+    font-family: "Cormorant Garamond", Georgia, serif;
+    font-style: italic;
+    font-size: 18px;
+    letter-spacing: 0;
+    text-transform: none;
+    transform: translateY(1px);
+  }
+
+  /* meta line under CTA — sets expectation, very quiet */
+  .cad-portrait-empty .cad-meta {
+    margin: 26px 0 0;
+    font-size: 10.5px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: #8a8a7d;
+  }
+  .cad-portrait-empty .cad-meta .dot {
+    color: #c9c3b3;
+    margin: 0 10px;
+  }
+
+  /* responsive */
+  @media (max-width: 640px) {
+    .cad-portrait-empty {
+      padding: 56px 28px 64px;
+      border-radius: 2px;
+    }
+    .cad-portrait-empty .cad-heading { font-size: 38px; }
+    .cad-portrait-empty .cad-body { font-size: 17px; }
+    .cad-portrait-empty .cad-mark { width: 76px; gap: 11px; margin-bottom: 32px; }
+    .cad-portrait-empty .cad-kicker { margin-bottom: 32px; }
+  }
+</style>
+
+</head>
+<body>
+
+<!-- ─────────────────────────────────────────────────────────────
+     PREVIEW CHROME — for context only. Not part of the snippet.
+───────────────────────────────────────────────────────────────── -->
+<header class="app-shell">
+  <div class="mark">Cadence</div>
+  <nav>
+    <a href="#" class="is-current">Portrait</a>
+    <a href="#">Sittings</a>
+    <a href="#">Account</a>
+  </nav>
+  <div class="who">you@example.com</div>
+</header>
+
+<main class="page">
+
+  <div class="page-head">
+    <div class="crumb">
+      <span class="forest">Portrait</span>
+      <span style="color:#c9c3b3; margin: 0 10px;">·</span>
+      <span>no sittings yet</span>
+    </div>
+    <div class="date">25 May 2026</div>
+  </div>
+
+  <!-- ─────────────────────────────────────────────────────────────
+       DROP-IN SNIPPET — markup
+       Paste into the portrait page where the empty state belongs.
+  ───────────────────────────────────────────────────────────────── -->
+  <section class="cad-portrait-empty" aria-labelledby="cad-empty-heading">
+
+    <p class="cad-kicker">
+      Your&nbsp;Portrait <span class="dot">·</span> Awaiting&nbsp;first&nbsp;sitting
+    </p>
+
+    <!-- mark: 25 unfilled ticks — one per choice, all waiting. -->
+    <div class="cad-mark" aria-hidden="true">
+      <i></i><i></i><i></i><i></i><i></i>
+      <i></i><i></i><i></i><i></i><i></i>
+      <i></i><i></i><i class="is-now"></i><i></i><i></i>
+      <i></i><i></i><i></i><i></i><i></i>
+      <i></i><i></i><i></i><i></i><i></i>
+    </div>
+
+    <h1 id="cad-empty-heading" class="cad-heading">
+      Your portrait starts here.
+    </h1>
+
+    <p class="cad-body">
+      Complete Cadence to see your choice sheet. Return in a few months or a year to retake — <em>the comparison between two sheets is where the most important self-knowledge lives.</em>
+    </p>
+
+    <a href="/sit" class="cad-cta">
+      Begin&nbsp;Cadence <span class="arrow">→</span>
+    </a>
+
+    <p class="cad-meta">
+      25&nbsp;choices <span class="dot">·</span> ~8&nbsp;minutes <span class="dot">·</span> No&nbsp;score
+    </p>
+
+  </section>
+  <!-- ─────────────────────────────────────────────────────────── -->
+
+</main>
+
+</body>
+</html>

@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>Cadence — OG image (1200×630)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --paper:  #F8F6F1;
+    --forest: #243D16;
+    --ink:    #1c1c1a;
+    --rule:   #d8d4c7;
+    --mute:   #6b6b62;
+    --soft:   #8a8a7d;
+  }
+  html, body { margin: 0; padding: 0; background: #2a2826; }
+  body {
+    min-height: 100vh;
+    display: flex; align-items: center; justify-content: center;
+    padding: 40px;
+    font-family: "Cormorant Garamond", Georgia, serif;
+  }
+
+  /* --- The actual 1200×630 surface --- */
+  .og {
+    position: relative;
+    width: 1200px;
+    height: 630px;
+    background: var(--paper);
+    color: var(--ink);
+    overflow: hidden;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.35);
+  }
+
+  /* Top + bottom hairlines — like an editorial title page */
+  .og .frame-top, .og .frame-bot {
+    position: absolute; left: 64px; right: 64px;
+    height: 1px; background: var(--rule);
+  }
+  .og .frame-top { top: 56px; }
+  .og .frame-bot { bottom: 56px; }
+
+  /* meta rows */
+  .meta-row {
+    position: absolute; left: 64px; right: 64px;
+    display: flex; justify-content: space-between; align-items: baseline;
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--mute);
+  }
+  .meta-row.top { top: 30px; }
+  .meta-row.bot { bottom: 30px; }
+  .meta-row .forest { color: var(--forest); }
+  .meta-row .dot { color: var(--rule); margin: 0 10px; }
+
+  /* The main two-column body */
+  .body {
+    position: absolute;
+    top: 90px; bottom: 90px;
+    left: 72px; right: 72px;
+    display: grid;
+    grid-template-columns: 1.18fr 1px 1fr;
+    gap: 56px;
+  }
+
+  /* divider rule between columns */
+  .divider {
+    width: 1px;
+    background: var(--rule);
+    height: 100%;
+  }
+
+  /* ── LEFT: wordmark + tagline ─────────────────── */
+  .left {
+    display: flex; flex-direction: column; justify-content: space-between;
+    padding: 4px 0 8px;
+  }
+  .left .chapter-mark {
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    font-size: 10px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--soft);
+  }
+  .left .wordmark {
+    font-family: "Cormorant Garamond", serif;
+    font-weight: 500;
+    font-size: 196px;
+    line-height: 0.86;
+    letter-spacing: -0.018em;
+    color: var(--forest);
+    margin: 0;
+    /* slight optical lift so the wordmark sits with the tagline */
+    margin-left: -6px;
+  }
+  .left .tagline {
+    font-family: "Cormorant Garamond", serif;
+    font-weight: 400;
+    font-style: italic;
+    font-size: 34px;
+    line-height: 1.22;
+    letter-spacing: -0.005em;
+    color: var(--ink);
+    max-width: 520px;
+    margin: 0;
+    text-wrap: pretty;
+  }
+  .left .tagline .em {
+    /* secondary phrase given quiet emphasis with weight, not size */
+    font-weight: 500;
+    font-style: italic;
+  }
+  .left .signature {
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--mute);
+  }
+  .left .signature b {
+    color: var(--forest);
+    font-weight: 600;
+    letter-spacing: 0.22em;
+  }
+
+  /* ── RIGHT: a quiet specimen of a Choice Sheet entry ── */
+  .right {
+    display: flex; flex-direction: column;
+    padding: 4px 0 8px;
+    position: relative;
+  }
+  .right .kicker {
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    font-size: 10px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--forest);
+    margin-bottom: 22px;
+  }
+  .right .qlabel {
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    font-size: 9.5px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--soft);
+    margin-bottom: 12px;
+  }
+  .right .question {
+    font-family: "Cormorant Garamond", serif;
+    font-style: italic;
+    font-weight: 400;
+    font-size: 19px;
+    line-height: 1.45;
+    color: var(--mute);
+    margin: 0 0 16px;
+    max-width: 360px;
+  }
+  .right .answer {
+    font-family: "Cormorant Garamond", serif;
+    font-weight: 500;
+    font-size: 38px;
+    line-height: 1.12;
+    letter-spacing: -0.012em;
+    color: var(--ink);
+    margin: 0 0 26px;
+    max-width: 400px;
+    text-wrap: balance;
+  }
+  .right .obs {
+    display: flex; gap: 16px;
+    max-width: 400px;
+    margin-top: auto;
+  }
+  .right .obs .rule {
+    width: 2px;
+    background: var(--forest);
+    flex-shrink: 0;
+  }
+  .right .obs .text {
+    font-family: "Cormorant Garamond", serif;
+    font-style: italic;
+    font-size: 18px;
+    line-height: 1.55;
+    color: #3b3b35;
+  }
+
+  /* a tiny mark in the bottom-right of the right column, mirroring the favicon's stylised C — drawn from the deliverable SVG path */
+  .right .corner-mark {
+    position: absolute;
+    right: -2px; top: -4px;
+    width: 52px; height: 52px;
+    opacity: 0.95;
+  }
+
+  /* ── label below canvas (page chrome only) ─────── */
+  .canvas-caption {
+    position: absolute;
+    left: 50%; transform: translateX(-50%);
+    bottom: -28px;
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    color: #9b9789;
+    text-transform: uppercase;
+  }
+</style>
+</head>
+<body>
+
+<div class="og" id="og">
+
+  <!-- TOP META -->
+  <div class="meta-row top">
+    <span>Cadence<span class="dot">·</span>cadence.work</span>
+    <span class="forest">A&nbsp;quiet&nbsp;instrument</span>
+  </div>
+
+  <div class="frame-top"></div>
+
+  <!-- BODY -->
+  <div class="body">
+
+    <!-- LEFT COLUMN -->
+    <div class="left">
+      <div class="chapter-mark">The&nbsp;Choice&nbsp;Sheet&nbsp;&nbsp;·&nbsp;&nbsp;Twenty-five&nbsp;questions</div>
+
+      <h1 class="wordmark">Cadence</h1>
+
+      <p class="tagline">
+        What your working life reveals<br/>
+        <span class="em">about who you actually are.</span>
+      </p>
+
+      <div class="signature">
+        <b>Begin</b>&nbsp;&nbsp;·&nbsp;&nbsp;cadence.work
+      </div>
+    </div>
+
+    <!-- DIVIDER -->
+    <div class="divider"></div>
+
+    <!-- RIGHT: SPECIMEN -->
+    <div class="right">
+      <svg class="corner-mark" viewBox="0 0 192 192" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path fill="#243D16" d="
+          M 147.5 54.5
+          L 151.5 60.2
+          L 146.8 67.6
+          L 122.6 76.8
+          A 33 35 0 1 1 122.6 115.2
+          L 146.8 124.4
+          L 151.5 131.8
+          L 147.5 137.5
+          A 66 68 0 1 1 147.5 54.5
+          Z
+        "></path>
+      </svg>
+
+      <div class="kicker">Chapter&nbsp;I&nbsp;&nbsp;·&nbsp;&nbsp;Test&nbsp;of&nbsp;Tempo</div>
+
+      <div class="qlabel">Forced&nbsp;Choice</div>
+      <p class="question">When the morning is yours to spend, you&rsquo;d rather&hellip;</p>
+      <p class="answer">Begin slowly and finish late.</p>
+
+      <div class="obs">
+        <div class="rule"></div>
+        <div class="text">You trust the warm-up. Momentum is something you earn, not summon.</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="frame-bot"></div>
+
+  <!-- BOTTOM META -->
+  <div class="meta-row bot">
+    <span>No&nbsp;score<span class="dot">·</span>No&nbsp;grade<span class="dot">·</span>Only&nbsp;what&nbsp;they&nbsp;say</span>
+    <span>vol.&nbsp;01<span class="dot">·</span>mmxxvi</span>
+  </div>
+
+</div>
+
+<div class="canvas-caption">1200 × 630 · OG / Social card</div>
+
+</body>
+</html>

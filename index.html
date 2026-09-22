@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>Cadence — Design</title>
+<link rel="icon" type="image/svg+xml" href="public/favicon/favicon-32.svg"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --paper:  #F8F6F1;
+    --forest: #243D16;
+    --ink:    #1c1c1a;
+    --rule:   #d8d4c7;
+    --mute:   #6b6b62;
+  }
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--paper); color: var(--ink); }
+  body {
+    font-family: "JetBrains Mono", monospace;
+    padding: 56px 64px 96px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  header {
+    display: flex; align-items: baseline; justify-content: space-between;
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 24px;
+    margin-bottom: 56px;
+  }
+  header .wordmark {
+    font-family: "Cormorant Garamond", Georgia, serif;
+    font-weight: 500;
+    font-size: 40px;
+    letter-spacing: -0.01em;
+    color: var(--forest);
+    line-height: 1;
+    margin: 0;
+  }
+  header .meta {
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--mute);
+    text-align: right;
+    line-height: 1.8;
+  }
+
+  h2 {
+    font-family: "Cormorant Garamond", Georgia, serif;
+    font-weight: 500;
+    font-size: 20px;
+    letter-spacing: 0.01em;
+    color: var(--ink);
+    margin: 0 0 20px;
+  }
+
+  .group { margin-bottom: 56px; }
+  .group-label {
+    font-size: 9px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--mute);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .group-label::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: var(--rule);
+  }
+
+  .links {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 12px;
+  }
+  .link-card {
+    display: block;
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    padding: 20px 24px;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 140ms ease, background 140ms ease;
+  }
+  .link-card:hover { border-color: var(--forest); background: #f2efe8; }
+  .link-card .name {
+    font-family: "Cormorant Garamond", Georgia, serif;
+    font-weight: 500;
+    font-size: 19px;
+    color: var(--ink);
+    margin-bottom: 4px;
+  }
+  .link-card .path {
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: var(--mute);
+  }
+  .link-card .type {
+    display: inline-block;
+    margin-top: 12px;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--forest);
+    border: 1px solid currentColor;
+    padding: 2px 6px;
+    border-radius: 2px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1 class="wordmark">Cadence</h1>
+  <div class="meta">
+    cadence.work<br/>
+    static pages
+  </div>
+</header>
+
+<div class="group">
+  <div class="group-label">Pages</div>
+  <div class="links">
+    <a class="link-card" href="pages/portrait-empty-state.html">
+      <div class="name">Portrait Empty State</div>
+      <div class="path">pages/portrait-empty-state.html</div>
+      <span class="type">App Page</span>
+    </a>
+    <a class="link-card" href="pages/og-image.html">
+      <div class="name">OG Image</div>
+      <div class="path">pages/og-image.html</div>
+      <span class="type">Social Card</span>
+    </a>
+    <a class="link-card" href="pages/favicon-brand.html">
+      <div class="name">Favicon &amp; Brand</div>
+      <div class="path">pages/favicon-brand.html</div>
+      <span class="type">Identity</span>
+    </a>
+  </div>
+</div>
+
+<div class="group">
+  <div class="group-label">Emails</div>
+  <div class="links">
+    <a class="link-card" href="emails/choice-sheet.html">
+      <div class="name">Choice Sheet</div>
+      <div class="path">emails/choice-sheet.html</div>
+      <span class="type">Email</span>
+    </a>
+    <a class="link-card" href="emails/magic-link.html">
+      <div class="name">Magic Link</div>
+      <div class="path">emails/magic-link.html</div>
+      <span class="type">Email</span>
+    </a>
+  </div>
+</div>
+
+</body>
+</html>
