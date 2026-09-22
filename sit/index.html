@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Cadence — Begin</title>
+<link rel="icon" type="image/svg+xml" href="../public/favicon/favicon-32.svg"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --paper:  #F8F6F1;
+    --forest: #243D16;
+    --ink:    #1c1c1a;
+    --rule:   #d8d4c7;
+    --muted:  #6b6b62;
+    --soft:   #8a8a7d;
+    --warm:   #EEE9DF;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { font-size: 16px; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: "Cormorant Garamond", Georgia, serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ── Nav bar ── */
+  .nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    padding: 20px 40px;
+    display: flex; align-items: center; justify-content: space-between;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.3s, background 0.3s;
+  }
+  .nav.scrolled { border-color: var(--rule); background: rgba(248,246,241,0.96); backdrop-filter: blur(4px); }
+  .nav .wordmark {
+    font-weight: 500; font-size: 24px; letter-spacing: -0.01em;
+    color: var(--forest); text-decoration: none;
+  }
+  .nav .progress-label {
+    font-family: -apple-system, "Helvetica Neue", Arial, sans-serif;
+    font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--soft);
+    opacity: 0; transition: opacity 0.3s;
+  }
+  .nav .progress-label.visible { opacity: 1; }
+
+  /* ── Progress bar ── */
+  .progress-bar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 101;
+    height: 2px; background: var(--rule);
+  }
+  .progress-bar .fill {
+    height: 100%; background: var(--forest);
+    width: 0%; transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* ── Screen system ── */
+  .screen {
+    display: none;
+    flex: 1;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 100px 24px 64px;
+    min-height: 100vh;
+    animation: fadeUp 0.45s cubic-bezier(0.4, 0, 0.2, 1) both;
+  }
+  .screen.active { display: flex; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(18px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── Intro screen ── */
+  .intro-inner { max-width: 560px; width: 100%; }
+  .intro-kicker {
+    font-family: -apple-system, "Helvetica Neue", Arial, sans-serif;
+    font-size: 10px; letter-spacing: 0.28em; text-transform: uppercase;
+    color: var(--forest); margin-bottom: 32px;
+  }
+  .intro-h {
+    font-size: clamp(40px, 7vw, 68px);
+    font-weight: 400; font-style: italic;
+    line-height: 1.05; letter-spacing: -0.02em;
+    color: var(--ink); margin-bottom: 28px;
+  }
+  .intro-body {
+    font-size: 19px; line-height: 1.65; color: #3b3b35;
+    margin-bottom: 52px;
+  }
+  .intro-body em { font-style: italic; color: var(--ink); }
+
+  /* ── Chapter intro ── */
+  .chapter-inner { max-width: 480px; width: 100%; }
+  .chapter-num {
+    font-family: -apple-system, "Helvetica Neue", Arial, sans-serif;
+    font-size: 10px; letter-spacing: 0.28em; text-transform: uppercase;
+    color: var(--forest); margin-bottom: 20px;
+  }
+  .chapter-rule {
+    width: 32px; height: 1px; background: var(--forest);
+    margin-bottom: 28px;
+  }
+  .chapter-h {
+    font-size: clamp(32px, 5vw, 48px);
+    font-weight: 500; line-height: 1.1; letter-spacing: -0.015em;
+    color: var(--ink); margin-bottom: 16px;
+  }
+  .chapter-sub {
+    font-size: 18px; font-style: italic;
+    line-height: 1.55; color: var(--muted);
+    margin-bottom: 48px;
+  }
+
+  /* ── Question screen ── */
+  .question-inner { max-width: 560px; width: 100%; }
+
+  .q-chapter {
+    font-family: -apple-system, "Helvetica Neue", Arial, sans-serif;
+    font-size: 9.5px; letter-spacing: 0.28em; text-transform: uppercase;
+    color: var(--forest); margin-bottom: 8px;
+  }
+  .q-type {
+    font-family: -apple-system, "Helvetica Neue", Arial, sans-serif;
+    font-size: 9.5px; letter-spacing: 0.28em; text-transform: uppercase;
+    color: var(--soft); margin-bottom: 24px;
+  }
+  .q-text {
+    font-size: clamp(22px, 3.5vw, 30px);
+    font-weight: 400; font-style: italic;
+    line-height: 1.25; letter-spacing: -0.01em;
+    color: var(--ink); margin-bottom: 36px;
+  }
+
+  /* ── Input types ── */
+
+  /* Forced Choice / Either·Or / Multiple Choice */
+  .choices { display: flex; flex-direction: column; gap: 12px; margin-bottom: 40px; }
+  .choice-btn {
+    display: block; width: 100%; text-align: left;
+    padding: 18px 22px;
+    border: 1px solid var(--rule);
+    border-radius: 2px;
+    background: var(--paper);
+    font-family: "Cormorant Garamond", Georgia, serif;
+    font-size: 20px; font-weight: 500;
+    color: var(--ink); cursor: pointer;
+    transition: border-color 0.15s, background 0.15s, color 0.15s;
+    -webkit-appearance: none;
+  }
+  .choice-btn:hover { border-color: var(--forest); background: var(--warm); }
+  .choice-btn.selected {
+    border-color: var(--forest); background: var(--forest);
+    color: var(--paper);
+  }
+
+  /* Scale 1–7 */
+  .scale-wrap { margin-bottom: 40px; }
+  .scale-labels {
+    display: flex; justify-content: space-between;
+    font-family: -apple-system, "Helvetica Neue", Arial, sans-serif;
+    font-size: 10px; letter-spacing: 0.1em;
+    color: var(--soft); margin-bottom: 12px;
+  }
+  .scale-btns { display: flex; gap: 8px; }
+  .scale-btn {
+    flex: 1; aspect-ratio: 1 / 1;
+    border: 1px solid var(--rule); border-radius: 2px;
+    background: var(--paper);
+    font-family: "Cormorant Garamond", Georgia, serif;
+    font-size: 22px; font-weight: 500;
+    color: var(--muted); cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: border-color 0.15s, background 0.15s, color 0.15s;
+    -webkit-appearance: none;
+  }
+  .scale-btn:hover { border-color: var(--forest); color: var(--forest); }
+  .scale-btn.selected { border-color: var(--forest); background: var(--forest); color: var(--paper); }
+  .scale-caption {
+    margin-top: 16px;
+    font-style: italic; font-size: 16px; color: var(--soft);
+    min-height: 24px; transition: opacity 0.2s;
+  }
+
+  /* Open Field */
+  .open-field {
+    width: 100%; margin-bottom: 40px;
+    font-family: "Cormorant Garamond", Georgia, serif;
+    font-size: 22px; font-weight: 500;
+    color: var(--ink);
+    background: transparent;
+    border: none; border-bottom: 1px solid var(--rule);
+    border-radius: 0;
+    padding: 8px 0 14px;
+    outline: none; resize: none;
+    transition: border-color 0.2s;
+    display: block; min-height: 64px;
+    line-height: 1.4;
+  }
+  .open-field:focus { border-color: var(--forest); }
+  .open-field::placeholder { color: var(--soft); font-style: italic; font-weight: 400; }
+
+  /* Ranked Triplet */
+  .rank-wrap { margin-bottom: 40px; }
+  .rank-hint {
+    font-family: -apple-system, "Helvetica Neue", Arial, sans-serif;
+    font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;
+    color: var(--soft); margin-bottom: 16px;
+  }
+  .rank-items { display: flex; flex-direction: column; gap: 8px; }
+  .rank-item {
+    display: flex; align-items: center; gap: 20px;
+    padding: 16px 20px;
+    border: 1px solid var(--rule); border-radius: 2px;
+    background: var(--paper); cursor: grab;
+    transition: border-color 0.15s, background 0.15s;
+    user-select: none;
+  }
+  .rank-item:active { cursor: grabbing; }
+  .rank-item.dragging { opacity: 0.4; }
+  .rank-item.drag-over { border-color: var(--forest); background: var(--warm); }
+  .rank-item .rank-pos {
+    font-family: -apple-system, "Helvetica Neue", Arial, sans-serif;
+    font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;
+    color: var(--soft); min-width: 24px;
+  }
+  .rank-item .rank-label {
+    font-family: "Cormorant Garamond", Georgia, serif;
+    font-size: 20px; font-weight: 500;
+    color: var(--ink); flex: 1;
+  }
+  .rank-item .drag-handle {
+    color: var(--rule); font-size: 16px;
+  }
+
+  /* ── CTA button ── */
+  .btn {
+    display: inline-flex; align-items: baseline; gap: 10px;
+    font-family: -apple-system, "Helvetica Neue", Arial, sans-serif;
+    font-size: 11px; font-weight: 500; letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--paper); background: var(--forest);
+    border: 1px solid var(--forest); border-radius: 2px;
+    padding: 15px 24px 14px;
+    cursor: pointer; text-decoration: none;
+    transition: background 0.15s, transform 0.1s;
+    -webkit-appearance: none;
+  }
+  .btn:hover { background: #1a2e10; }
+  .btn:active { transform: translateY(1px); }
+  .btn .arrow {
+    font-family: "Cormorant Garamond", Georgia, serif;
+    font-style: italic; font-size: 17px;
+    letter-spacing: 0; text-transform: none;
+    transform: translateY(1px);
+  }
+  .btn:disabled { opacity: 0.35; cursor: not-allowed; }
+  .btn:disabled:active { transform: none; }
+
+  .btn-ghost {
+    background: transparent; color: var(--muted); border-color: var(--rule);
+  }
+  .btn-ghost:hover { background: var(--warm); color: var(--ink); border-color: var(--forest); }
+
+  /* ── Nav row below question ── */
+  .q-nav { display: flex; align-items: center; gap: 16px; }
+  .q-count {
+    font-family: -apple-system, "Helvetica Neue", Arial, sans-serif;
+    font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--soft); margin-left: auto;
+  }
+
+  /* ── Finish screen ── */
+  .finish-inner { max-width: 520px; width: 100%; text-align: center; }
+  .finish-mark {
+    width: 72px; margin: 0 auto 36px;
+    display: grid; grid-template-columns: repeat(5, 1fr);
+    gap: 10px; aspect-ratio: 1/1;
+  }
+  .finish-mark i {
+    display: block; width: 2px; height: 100%;
+    background: var(--forest); margin: 0 auto;
+  }
+  .finish-h {
+    font-size: clamp(32px, 5vw, 52px);
+    font-weight: 400; font-style: italic;
+    line-height: 1.08; letter-spacing: -0.015em;
+    margin-bottom: 20px;
+  }
+  .finish-body {
+    font-size: 18px; line-height: 1.65;
+    color: #3b3b35; margin-bottom: 44px;
+  }
+  .finish-meta {
+    font-family: -apple-system, "Helvetica Neue", Arial, sans-serif;
+    font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--soft); margin-top: 24px;
+  }
+  .finish-meta .dot { color: var(--rule); margin: 0 10px; }
+
+  /* ── Responsive ── */
+  @media (max-width: 600px) {
+    .nav { padding: 18px 20px; }
+    .screen { padding: 88px 20px 56px; }
+    .scale-btns { gap: 5px; }
+    .scale-btn { font-size: 18px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="progress-bar"><div class="fill" id="progress-fill"></div></div>
+
+<nav class="nav" id="main-nav">
+  <a class="wordmark" href="../">Cadence</a>
+  <span class="progress-label" id="progress-label"></span>
+</nav>
+
+<!-- ═══════════════════════════════════ SCREEN: INTRO ══ -->
+<div class="screen active" id="screen-intro">
+  <div class="intro-inner">
+    <p class="intro-kicker">The Choice Sheet &nbsp;·&nbsp; Twenty-five questions</p>
+    <h1 class="intro-h">What your choices say about you.</h1>
+    <p class="intro-body">
+      Twenty-five questions across five chapters. No score. No advice.<br/>
+      Only your answers — and what they quietly observe.<br/><br/>
+      <em>Takes around eight minutes. There are no right answers.</em>
+    </p>
+    <button class="btn" onclick="startSitting()">
+      Begin <span class="arrow">→</span>
+    </button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════ SCREEN: CHAPTER INTRO ══ -->
+<div class="screen" id="screen-chapter">
+  <div class="chapter-inner">
+    <div class="chapter-num" id="chapter-num"></div>
+    <div class="chapter-rule"></div>
+    <h2 class="chapter-h" id="chapter-h"></h2>
+    <p class="chapter-sub" id="chapter-sub"></p>
+    <button class="btn" onclick="startChapter()">
+      Continue <span class="arrow">→</span>
+    </button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════ SCREEN: QUESTION ══ -->
+<div class="screen" id="screen-question">
+  <div class="question-inner">
+    <div class="q-chapter" id="q-chapter"></div>
+    <div class="q-type" id="q-type"></div>
+    <p class="q-text" id="q-text"></p>
+    <div id="q-input"></div>
+    <div class="q-nav">
+      <button class="btn" id="q-next-btn" onclick="nextQuestion()" disabled>
+        Continue <span class="arrow">→</span>
+      </button>
+      <span class="q-count" id="q-count"></span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════ SCREEN: FINISH ══ -->
+<div class="screen" id="screen-finish">
+  <div class="finish-inner">
+    <div class="finish-mark" aria-hidden="true">
+      <i></i><i></i><i></i><i></i><i></i>
+      <i></i><i></i><i></i><i></i><i></i>
+      <i></i><i></i><i></i><i></i><i></i>
+      <i></i><i></i><i></i><i></i><i></i>
+      <i></i><i></i><i></i><i></i><i></i>
+    </div>
+    <h2 class="finish-h">Your sitting is complete.</h2>
+    <p class="finish-body">
+      Your choice sheet will arrive by email — usually within a few minutes.
+      Return in a few months or a year to retake.<br/><br/>
+      The comparison between two sheets is where the most important self-knowledge lives.
+    </p>
+    <a href="../" class="btn">Return to Cadence <span class="arrow">→</span></a>
+    <p class="finish-meta">
+      25&nbsp;choices <span class="dot">·</span> No&nbsp;score <span class="dot">·</span> No&nbsp;grade
+    </p>
+  </div>
+</div>
+
+<script>
+  /* ── Data ─────────────────────────────────────────────────────────────── */
+
+  const CHAPTERS = [
+    {
+      num:  "Chapter I",
+      name: "Test of Tempo",
+      sub:  "How you move through a day."
+    },
+    {
+      num:  "Chapter II",
+      name: "Test of Threshold",
+      sub:  "Where you draw the line."
+    },
+    {
+      num:  "Chapter III",
+      name: "Test of Mirror",
+      sub:  "What you see when you look."
+    },
+    {
+      num:  "Chapter IV",
+      name: "Test of Compass",
+      sub:  "What you're pointed at."
+    },
+    {
+      num:  "Chapter V",
+      name: "Test of Cadence",
+      sub:  "The shape of your repeating."
+    }
+  ];
+
+  const SCALE_CAPTIONS = {
+    1: { 2: "almost never", 7: "1 — almost never", 13: "1 — almost nothing makes it through", 18: "1 — completely different", 23: "1 — I dig in hard" },
+    7: { 2: "always",        7: "7 — it doesn't move me much", 13: "7 — I say exactly what I think", 18: "7 — exactly as planned", 23: "7 — immediately — evidence always wins" }
+  };
+
+  const QUESTIONS = [
+    /* ── Chapter I ───────────────────────────────────────── */
+    {
+      chapter: 0, type: "forced",
+      text: "When the morning is yours to spend, you'd rather…",
+      options: [
+        "Begin slowly and finish late.",
+        "Begin early and close everything before noon."
+      ]
+    },
+    {
+      chapter: 0, type: "scale",
+      text: "How often do you finish what you started this week?",
+      lo: "almost never", hi: "always"
+    },
+    {
+      chapter: 0, type: "open",
+      text: "The last thing that made you lose track of time.",
+      placeholder: "Answer honestly."
+    },
+    {
+      chapter: 0, type: "either",
+      text: "A long task — you’d prefer to do it…",
+      options: [
+        "In one uninterrupted sitting.",
+        "In planned segments, spread over days."
+      ]
+    },
+    {
+      chapter: 0, type: "ranked",
+      text: "Order these by how you’d rather spend a quiet hour: read, walk, write.",
+      items: ["Read", "Walk", "Write"]
+    },
+
+    /* ── Chapter II ───────────────────────────────────────── */
+    {
+      chapter: 1, type: "forced",
+      text: "Asked for a favour you can’t do well, you’d rather…",
+      options: [
+        "Say no, and explain nothing.",
+        "Say yes, and improvise."
+      ]
+    },
+    {
+      chapter: 1, type: "scale",
+      text: "How comfortable are you sitting with someone else’s disappointment?",
+      lo: "it undoes me", hi: "it doesn’t move me"
+    },
+    {
+      chapter: 1, type: "open",
+      text: "A thing you used to tolerate and no longer will.",
+      placeholder: "Be specific."
+    },
+    {
+      chapter: 1, type: "either",
+      text: "A boundary works best when it’s…",
+      options: [
+        "Quiet and consistent.",
+        "Named and defended."
+      ]
+    },
+    {
+      chapter: 1, type: "multi",
+      text: "Which costs you most?",
+      options: [
+        "Being misunderstood by someone close.",
+        "Being wrong in public.",
+        "Wasting a good hour.",
+        "Leaving something unfinished."
+      ]
+    },
+
+    /* ── Chapter III ───────────────────────────────────────── */
+    {
+      chapter: 2, type: "open",
+      text: "One word a stranger has used about you that stuck.",
+      placeholder: "One word."
+    },
+    {
+      chapter: 2, type: "forced",
+      text: "You’d rather be seen as…",
+      options: [
+        "Interesting, not impressive.",
+        "Impressive, not interesting."
+      ]
+    },
+    {
+      chapter: 2, type: "scale",
+      text: "How accurately does your inner monologue match what you say out loud?",
+      lo: "almost nothing makes it through", hi: "I say exactly what I think"
+    },
+    {
+      chapter: 2, type: "either",
+      text: "The version of yourself you trust most is the one…",
+      options: [
+        "Alone at the end of the day.",
+        "In the company of someone who knows you."
+      ]
+    },
+    {
+      chapter: 2, type: "open",
+      text: "A compliment you’ve never quite believed.",
+      placeholder: "What do people say?"
+    },
+
+    /* ── Chapter IV ───────────────────────────────────────── */
+    {
+      chapter: 3, type: "forced",
+      text: "If you had to choose now: depth, or breadth?",
+      options: [
+        "Depth.",
+        "Breadth."
+      ]
+    },
+    {
+      chapter: 3, type: "open",
+      text: "A thing you want that you don’t usually admit to.",
+      placeholder: "Be honest."
+    },
+    {
+      chapter: 3, type: "scale",
+      text: "How close is your life now to what you imagined at twenty?",
+      lo: "completely different", hi: "exactly as planned"
+    },
+    {
+      chapter: 3, type: "either",
+      text: "A good life is closer to…",
+      options: [
+        "A few rooms, fully lived in.",
+        "A grand tour of many rooms."
+      ]
+    },
+    {
+      chapter: 3, type: "ranked",
+      text: "Order these by what you’d protect first: time, attention, reputation.",
+      items: ["Time", "Attention", "Reputation"]
+    },
+
+    /* ── Chapter V ───────────────────────────────────────── */
+    {
+      chapter: 4, type: "open",
+      text: "Something you’ve done at least a hundred times this year.",
+      placeholder: "A repeated act, however small."
+    },
+    {
+      chapter: 4, type: "multi",
+      text: "A habit you’d defend in court…",
+      options: [
+        "Walking somewhere the long way.",
+        "Reading the same book twice.",
+        "Never answering calls without warning.",
+        "Keeping a strict morning sequence."
+      ]
+    },
+    {
+      chapter: 4, type: "scale",
+      text: "How easily do you change your mind when given good reason?",
+      lo: "I dig in hard", hi: "immediately — evidence always wins"
+    },
+    {
+      chapter: 4, type: "either",
+      text: "Change, for you, tends to come…",
+      options: [
+        "Slowly, and then all at once.",
+        "Steadily and deliberately."
+      ]
+    },
+    {
+      chapter: 4, type: "open",
+      text: "Where, in your week, are you most recognisably yourself?",
+      placeholder: "Day, time, place."
+    }
+  ];
+
+  /* ── State ────────────────────────────────────────────────────────────── */
+
+  let currentQuestion  = 0;
+  let currentChapter   = -1;
+  let awaitingChapter  = false;
+  const answers        = new Array(QUESTIONS.length).fill(null);
+
+  /* ── Helpers ──────────────────────────────────────────────────────────── */
+
+  function showScreen(id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    const el = document.getElementById(id);
+    el.classList.add('active');
+    // reset animation
+    el.style.animation = 'none';
+    el.offsetHeight; // reflow
+    el.style.animation = '';
+    window.scrollTo(0, 0);
+  }
+
+  function updateNav() {
+    const label  = document.getElementById('progress-label');
+    const fill   = document.getElementById('progress-fill');
+    const done   = answers.filter(a => a !== null).length;
+    const pct    = Math.round((done / QUESTIONS.length) * 100);
+
+    fill.style.width = pct + '%';
+
+    if (done > 0) {
+      label.textContent = `${done} / ${QUESTIONS.length}`;
+      label.classList.add('visible');
+    } else {
+      label.classList.remove('visible');
+    }
+  }
+
+  function enableNext(yes) {
+    const btn = document.getElementById('q-next-btn');
+    if (btn) btn.disabled = !yes;
+  }
+
+  /* ── Nav scroll effect ────────────────────────────────────────────────── */
+
+  window.addEventListener('scroll', () => {
+    document.getElementById('main-nav').classList.toggle('scrolled', window.scrollY > 8);
+  });
+
+  /* ── Sitting flow ─────────────────────────────────────────────────────── */
+
+  function startSitting() {
+    currentQuestion = 0;
+    currentChapter  = -1;
+    showChapterIntro(0);
+  }
+
+  function showChapterIntro(chapterIdx) {
+    currentChapter   = chapterIdx;
+    awaitingChapter  = true;
+    const ch = CHAPTERS[chapterIdx];
+    document.getElementById('chapter-num').textContent = ch.num + ' · ' + ch.name;
+    document.getElementById('chapter-h').textContent   = ch.name;
+    document.getElementById('chapter-sub').textContent = ch.sub;
+    showScreen('screen-chapter');
+    updateNav();
+  }
+
+  function startChapter() {
+    awaitingChapter = false;
+    showQuestion(currentQuestion);
+  }
+
+  function showQuestion(idx) {
+    const q     = QUESTIONS[idx];
+    const total = QUESTIONS.length;
+    const chIdx = q.chapter;
+    const ch    = CHAPTERS[chIdx];
+
+    document.getElementById('q-chapter').textContent =
+      ch.num + ' · ' + ch.name;
+    document.getElementById('q-type').textContent =
+      labelForType(q.type);
+    document.getElementById('q-text').textContent  = q.text;
+    document.getElementById('q-count').textContent =
+      (idx + 1) + ' of ' + total;
+
+    const inputEl = document.getElementById('q-input');
+    inputEl.innerHTML = '';
+
+    switch (q.type) {
+      case 'forced':
+      case 'either':
+      case 'multi':
+        inputEl.appendChild(buildChoices(q.options, idx));
+        break;
+      case 'scale':
+        inputEl.appendChild(buildScale(idx, q.lo, q.hi));
+        break;
+      case 'open':
+        inputEl.appendChild(buildOpen(idx, q.placeholder));
+        break;
+      case 'ranked':
+        inputEl.appendChild(buildRanked(idx, q.items));
+        break;
+    }
+
+    enableNext(answers[idx] !== null);
+    showScreen('screen-question');
+    updateNav();
+  }
+
+  function labelForType(t) {
+    return {
+      forced:  'Forced Choice',
+      either:  'Either / Or',
+      multi:   'Multiple Choice',
+      scale:   'Scale 1–7',
+      open:    'Open Field',
+      ranked:  'Ranked Triplet'
+    }[t] || t;
+  }
+
+  /* ── Input builders ─────────────────────────────────────────────────────*/
+
+  function buildChoices(options, qIdx) {
+    const wrap = document.createElement('div');
+    wrap.className = 'choices';
+    options.forEach((opt, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'choice-btn';
+      btn.textContent = opt;
+      if (answers[qIdx] === i) btn.classList.add('selected');
+      btn.addEventListener('click', () => {
+        wrap.querySelectorAll('.choice-btn').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+        answers[qIdx] = i;
+        enableNext(true);
+      });
+      wrap.appendChild(btn);
+    });
+    return wrap;
+  }
+
+  function buildScale(qIdx, lo, hi) {
+    const wrap = document.createElement('div');
+    wrap.className = 'scale-wrap';
+
+    const labels = document.createElement('div');
+    labels.className = 'scale-labels';
+    labels.innerHTML = `<span>${lo}</span><span>${hi}</span>`;
+    wrap.appendChild(labels);
+
+    const btns = document.createElement('div');
+    btns.className = 'scale-btns';
+
+    const caption = document.createElement('div');
+    caption.className = 'scale-caption';
+
+    for (let v = 1; v <= 7; v++) {
+      const btn = document.createElement('button');
+      btn.className = 'scale-btn';
+      btn.textContent = v;
+      btn.dataset.val = v;
+      if (answers[qIdx] === v) btn.classList.add('selected');
+      btn.addEventListener('click', () => {
+        btns.querySelectorAll('.scale-btn').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+        answers[qIdx] = v;
+        caption.textContent = '';
+        enableNext(true);
+      });
+      btns.appendChild(btn);
+    }
+
+    wrap.appendChild(btns);
+    wrap.appendChild(caption);
+    return wrap;
+  }
+
+  function buildOpen(qIdx, placeholder) {
+    const ta = document.createElement('textarea');
+    ta.className = 'open-field';
+    ta.placeholder = placeholder || '';
+    ta.rows = 3;
+    if (answers[qIdx]) ta.value = answers[qIdx];
+
+    ta.addEventListener('input', () => {
+      answers[qIdx] = ta.value.trim() || null;
+      enableNext(!!answers[qIdx]);
+      // auto-grow
+      ta.style.height = 'auto';
+      ta.style.height = ta.scrollHeight + 'px';
+    });
+
+    // restore height
+    setTimeout(() => {
+      ta.style.height = 'auto';
+      ta.style.height = ta.scrollHeight + 'px';
+    }, 0);
+
+    return ta;
+  }
+
+  function buildRanked(qIdx, items) {
+    const wrap = document.createElement('div');
+    wrap.className = 'rank-wrap';
+
+    const hint = document.createElement('div');
+    hint.className = 'rank-hint';
+    hint.textContent = 'Drag to reorder — first is most preferred';
+    wrap.appendChild(hint);
+
+    const list = document.createElement('div');
+    list.className = 'rank-items';
+
+    // Restore saved order or default
+    const savedOrder = answers[qIdx] || [...items];
+    let order = [...savedOrder];
+
+    function renderItems() {
+      list.innerHTML = '';
+      order.forEach((label, pos) => {
+        const item = document.createElement('div');
+        item.className = 'rank-item';
+        item.draggable = true;
+        item.dataset.label = label;
+        item.innerHTML = `
+          <span class="rank-pos">${pos + 1}</span>
+          <span class="rank-label">${label}</span>
+          <span class="drag-handle">⠿</span>
+        `;
+
+        // ── touch ranking: tap to cycle position ──
+        item.addEventListener('click', () => {
+          const fromIdx = order.indexOf(label);
+          const toIdx   = (fromIdx + 1) % order.length;
+          order.splice(fromIdx, 1);
+          order.splice(toIdx, 0, label);
+          answers[qIdx] = [...order];
+          enableNext(true);
+          renderItems();
+        });
+
+        // ── drag ──
+        item.addEventListener('dragstart', e => {
+          e.dataTransfer.setData('text/plain', label);
+          item.classList.add('dragging');
+        });
+        item.addEventListener('dragend', () => {
+          item.classList.remove('dragging');
+          list.querySelectorAll('.rank-item').forEach(i => i.classList.remove('drag-over'));
+        });
+        item.addEventListener('dragover', e => {
+          e.preventDefault();
+          list.querySelectorAll('.rank-item').forEach(i => i.classList.remove('drag-over'));
+          item.classList.add('drag-over');
+        });
+        item.addEventListener('drop', e => {
+          e.preventDefault();
+          const fromLabel = e.dataTransfer.getData('text/plain');
+          const fromIdx   = order.indexOf(fromLabel);
+          const toIdx     = order.indexOf(label);
+          if (fromIdx !== toIdx) {
+            order.splice(fromIdx, 1);
+            order.splice(toIdx, 0, fromLabel);
+            answers[qIdx] = [...order];
+            enableNext(true);
+            renderItems();
+          }
+        });
+
+        list.appendChild(item);
+      });
+
+      // ranked triplets are always answered (they have a default order)
+      if (answers[qIdx] === null) {
+        answers[qIdx] = [...order];
+        enableNext(true);
+      }
+    }
+
+    renderItems();
+    wrap.appendChild(list);
+
+    const tap = document.createElement('div');
+    tap.className = 'rank-hint';
+    tap.style.marginTop = '10px';
+    tap.textContent = 'Tap an item to move it down · or drag to rearrange';
+    wrap.appendChild(tap);
+
+    return wrap;
+  }
+
+  /* ── Navigation ─────────────────────────────────────────────────────────*/
+
+  function nextQuestion() {
+    if (answers[currentQuestion] === null) return;
+    currentQuestion++;
+
+    if (currentQuestion >= QUESTIONS.length) {
+      showScreen('screen-finish');
+      updateNav();
+      return;
+    }
+
+    const nextChapter = QUESTIONS[currentQuestion].chapter;
+    if (nextChapter !== currentChapter) {
+      showChapterIntro(nextChapter);
+    } else {
+      showQuestion(currentQuestion);
+    }
+  }
+
+  /* ── Keyboard nav ───────────────────────────────────────────────────────*/
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
+      const nextBtn = document.getElementById('q-next-btn');
+      if (nextBtn && !nextBtn.disabled) nextQuestion();
+    }
+  });
+
+  /* ── Init ───────────────────────────────────────────────────────────────*/
+  updateNav();
+</script>
+</body>
+</html>
